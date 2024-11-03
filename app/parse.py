@@ -68,7 +68,10 @@ def get_list_of_quotes() -> list[Quote]:
     return all_quotes
 
 
-def write_quotes_to_the_file(output_csv_path: str, quotes: list[Quote]) -> None:
+def write_quotes_to_the_file(
+        output_csv_path: str,
+        quotes: list[Quote]
+) -> None:
     with open(output_csv_path, "w", newline="") as file:
         write = csv.writer(file)
         write.writerow(QUOTES_FIELDS)
