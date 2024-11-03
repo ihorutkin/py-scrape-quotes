@@ -10,12 +10,12 @@ from urllib.parse import urljoin
 BASE_URL = "https://quotes.toscrape.com/"
 
 
-
 @dataclass
 class Quote:
     text: str
     author: str
     tags: list[str]
+
 
 QUOTES_FIELDS = [field.name for field in fields(Quote)]
 
@@ -28,6 +28,7 @@ logging.basicConfig(
     ],
 )
 
+
 def parse_single_quote(quote) -> Quote:
     tags_soup = quote.select_one(".tags")
     tags = [tag.text for tag in tags_soup.select(".tag")]
@@ -37,9 +38,11 @@ def parse_single_quote(quote) -> Quote:
         tags=tags
     )
 
+
 def get_single_page_quotes(page_soup: BeautifulSoup) -> [Quote]:
     quotes = page_soup.select(".quote")
     return [parse_single_quote(quote_soup) for quote_soup in quotes]
+
 
 def get_list_of_quotes() -> list[Quote]:
     logging.info("Start parse")
@@ -63,11 +66,13 @@ def get_list_of_quotes() -> list[Quote]:
 
     return all_quotes
 
-def write_quotes_to_the_file(output_csv_path: str, quotes: [Quote]):
+
+def write_quotes_to_the_file(output_csv_path: str, quotes: [Quote]) -> None:
     with open(output_csv_path, "w", newline="") as file:
         write = csv.writer(file)
         write.writerow(QUOTES_FIELDS)
         write.writerows([astuple(quote) for quote in quotes])
+
 
 def main(output_csv_path: str) -> None:
     quotes = get_list_of_quotes()
