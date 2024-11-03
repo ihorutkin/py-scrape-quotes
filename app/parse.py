@@ -29,7 +29,7 @@ logging.basicConfig(
 )
 
 
-def parse_single_quote(quote) -> Quote:
+def parse_single_quote(quote: BeautifulSoup) -> Quote:
     tags_soup = quote.select_one(".tags")
     tags = [tag.text for tag in tags_soup.select(".tag")]
     return Quote(
@@ -39,7 +39,7 @@ def parse_single_quote(quote) -> Quote:
     )
 
 
-def get_single_page_quotes(page_soup: BeautifulSoup) -> [Quote]:
+def get_single_page_quotes(page_soup: BeautifulSoup) -> list[Quote]:
     quotes = page_soup.select(".quote")
     return [parse_single_quote(quote_soup) for quote_soup in quotes]
 
@@ -53,21 +53,22 @@ def get_list_of_quotes() -> list[Quote]:
     logging.info("First page was parsed successfully")
 
     next_btn = first_page_soup.select_one(".next")
-    print(next_btn)
     page_num = 1
     while next_btn:
         page_num += 1
         logging.info(f'Parsing page: {urljoin(BASE_URL, f"page/{page_num}/")}')
-        quote_page = requests.get(urljoin(BASE_URL, f"page/{page_num}/")).content
+        quote_page = requests.get(urljoin(
+            BASE_URL, f"page/{page_num}/")
+        ).content
         soup = BeautifulSoup(quote_page, "html.parser")
         next_btn = soup.select_one(".next")
         all_quotes.extend(get_single_page_quotes(soup))
-        logging.info(f"Parsing of page {page_num} was successfully")
+        logging.info(f"Parsing of page {page_num} was successful")
 
     return all_quotes
 
 
-def write_quotes_to_the_file(output_csv_path: str, quotes: [Quote]) -> None:
+def write_quotes_to_the_file(output_csv_path: str, quotes: list[Quote]) -> None:
     with open(output_csv_path, "w", newline="") as file:
         write = csv.writer(file)
         write.writerow(QUOTES_FIELDS)
