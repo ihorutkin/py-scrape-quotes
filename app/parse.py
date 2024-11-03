@@ -2,7 +2,6 @@ import csv
 import logging
 import os
 import sys
-from cgitb import handler
 from dataclasses import dataclass, fields, astuple
 import requests
 from bs4 import BeautifulSoup
@@ -65,15 +64,15 @@ def get_list_of_quotes() -> list[Quote]:
     return all_quotes
 
 def write_quotes_to_the_file(output_csv_path: str, quotes: [Quote]):
-    with open(output_csv_path, "w") as file:
+    with open(output_csv_path, "w", newline="") as file:
         write = csv.writer(file)
         write.writerow(QUOTES_FIELDS)
         write.writerows([astuple(quote) for quote in quotes])
 
-def main() -> None:
+def main(output_csv_path: str) -> None:
     quotes = get_list_of_quotes()
-    write_quotes_to_the_file("quotes.csv", quotes)
+    write_quotes_to_the_file(output_csv_path, quotes)
 
 
 if __name__ == "__main__":
-    main()
+    main("quotes.csv")
